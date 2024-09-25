@@ -17,8 +17,10 @@ The Visitor Count Badge tracks the number of unique visitors to your GitHub prof
   ```
   Replace `YOUR_GITHUB_NAME` with your actual GitHub username. For example, if your username is `unaveragetech`, the line will be:
   ```markdown
-  ![Visitor Count](https://visitor-badge.laobi.icu/badge?page_id=unaveragetech)
+  ![Visitor Count](https://visitor-badge.laobi.icu/badge?page_id=unaveragetech) 
   ```
+looks like this when displayed 
+![Visitor Count](https://visitor-badge.laobi.icu/badge?page_id=unaveragetech) 
 
 ### 2. Profile Views Badge
 The Profile Views Badge counts the total number of views your GitHub profile has received. This is useful for showing how many people are interested in your projects.
