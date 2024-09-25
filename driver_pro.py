@@ -3,12 +3,10 @@ import sys
 import time
 import random
 import threading
-import requests
 import statistics
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.by import By
 from ping3 import ping
 
 # Function to install required packages
@@ -16,14 +14,14 @@ def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
 # Check for required packages and install if missing
-try:
-    from selenium import webdriver
-except ImportError:
-    install('selenium')
-try:
-    from ping3 import ping
-except ImportError:
-    install('ping3')
+required_packages = ['selenium', 'ping3']
+
+for package in required_packages:
+    try:
+        __import__(package)
+    except ImportError:
+        print(f"{package} not found. Installing...")
+        install(package)
 
 # List of different user agents
 user_agents = [
@@ -37,8 +35,13 @@ user_agents = [
 def simulate_user_interactions(driver):
     try:
         actions = ActionChains(driver)
-        # Simulate mouse movements
-        actions.move_by_offset(random.randint(100, 500), random.randint(100, 500)).perform()
+        # Generate random offsets within the bounds of the window size
+        width = driver.execute_script("return window.innerWidth")
+        height = driver.execute_script("return window.innerHeight")
+        x_offset = random.randint(0, width - 1)
+        y_offset = random.randint(0, height - 1)
+        
+        actions.move_by_offset(x_offset, y_offset).perform()
         time.sleep(random.uniform(0.5, 2.0))
         # Simulate scroll
         driver.execute_script(f"window.scrollTo(0, {random.randint(100, 500)});")
@@ -51,7 +54,6 @@ def auto_reload(url, limit, initial_views, thread_num, lock, stats):
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--remote-debugging-port=9222")
     
     # Set random user agent for each thread
     user_agent = random.choice(user_agents)
@@ -67,12 +69,16 @@ def auto_reload(url, limit, initial_views, thread_num, lock, stats):
     
     # Simulate ping
     ping_time = ping('github.com')
+    if ping_time is not None:
+        print(f"Thread-{thread_num}: Ping time to GitHub: {ping_time * 1000:.2f} ms")
+    else:
+        print(f"Thread-{thread_num}: Ping request failed. Host may be unreachable.")
+        ping_time = 0  # Assign a default value in case of failure
     
-    print(f"Thread-{thread_num}: Opened URL: {url} with User-Agent: {user_agent}, Screen Size: {screen_width}x{screen_height}")
-    print(f"Thread-{thread_num}: Ping time to GitHub: {ping_time:.2f} ms")
-
     load_times = []
     
+    print(f"Thread-{thread_num}: Opened URL: {url} with User-Agent: {user_agent}, Screen Size: {screen_width}x{screen_height}")
+
     for i in range(limit):
         start_time = time.time()
         simulate_user_interactions(driver)  # Simulate interactions like scroll, mouse move
@@ -88,7 +94,8 @@ def auto_reload(url, limit, initial_views, thread_num, lock, stats):
     
     # Lock to ensure thread safety when accessing shared data
     with lock:
-        stats['ping_times'].append(ping_time)
+        if ping_time > 0:  # Only append if the ping was successful
+            stats['ping_times'].append(ping_time)
         stats['load_times'].extend(load_times)
         stats['total_reloads'] += limit
 
