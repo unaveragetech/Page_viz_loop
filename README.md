@@ -1,6 +1,11 @@
 ### README: Proof of Concept for Artificial Visitor & Profile View Inflation
 
+
+(DRiver_pro sub docs)
 https://github.com/unaveragetech/Page_viz_loop/blob/ba8c50b119516cdeaf40c3d9a31751281812c9a1/driverpro.md
+
+(Visitor badge explanation)
+https://github.com/unaveragetech/Page_viz_loop/blob/f91e1dc326e8683eb62f5396c4947c7ed9485faa/explanation.md
 
 ---
 
