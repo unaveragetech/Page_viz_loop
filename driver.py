@@ -1,5 +1,18 @@
+import subprocess
+import sys
+
+# Function to install a package if it's not already installed
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# Install Selenium if not already installed
+try:
+    import selenium
+except ImportError:
+    print("Selenium not found. Installing...")
+    install("selenium")
+
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 import time
 
 # Function to navigate to the page and reload
