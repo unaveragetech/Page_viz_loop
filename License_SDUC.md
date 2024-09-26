@@ -1,4 +1,5 @@
  # SDUC License (Small Dev Use Clause)
+<script src="https://gist.github.com/unaveragetech/a29c048c8b1ccad062066507bf183d9e.js"></script>
 
 **Copyright (c) 2024 Jesse Winghart**
 
